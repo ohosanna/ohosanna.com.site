@@ -1,0 +1,37 @@
+---
+layout: post
+title: Jquery 取消链接的默认行为
+created: 2010-08-03 17:27:22.000000000 +08:00
+tags: Web
+---
+
+在写JS脚本，特别是AJAX脚本的过程中，经常要取消掉对象的默认行为。比如说点击某个链接，就在特定的块里面显示另一个页面的内容，通常是这样来写：
+
+```html
+<div id="ajax">
+</div>
+<a href="ajax.html" class="load"></a>
+```
+
+Jquery Js
+
+```javascript
+$('.load a').bind ('click', function() {
+    var link = $(this).attr("href");
+   $('#ajax').load(link);
+});
+```
+
+这样的确可以把ajax.html的内容填入到#ajax中，但脚本执行完之后，页面还是会跳转到ajax.html这个页面，这可不是我所希望的结果。最后，查资料得到解决的方法，在脚本执行后返回flase取消默认的行为并阻止事件起泡（bubbling up），最后的脚本如下：
+
+```javascript
+$('.load a').bind ('click', function() {
+    var link = $(this).attr("href");
+   $('#ajax').load(link);
+   return false;
+});
+```
+
+另外，通过preventDefault() 方法只取消默认的行为，通过使用 stopPropagation() 方法只阻止一个事件起泡。
+
+参考网址：<a href="http://api.jquery.com/bind/" target="_blank">http://api.jquery.com/bind/</a>

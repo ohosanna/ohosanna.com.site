@@ -1,0 +1,120 @@
+---
+layout: post
+title: 为SCIM制作输入法
+created: 2010-10-18 10:27:49.000000000 +08:00
+tags: linux tools
+---
+
+在Linux下我一直都是用SCIM输入平台下的五笔输入法，最近用的有点不太爽了，因为默认的五笔输入法只有GB2312字符集，很多字都打不出来，比如“囧”和一些粤语聊天中经常用到的字（“冇”……“嘢”等），所以就打算弄一个如Windows下极点五笔那样的支持GBK字符集的输入法。
+
+首先，找一个现成的码表文件研究一下它的格式到底是怎么样的，SCIM的码表文件可以在/usr/share/scim/tables这个文件夹下面找到，先拿一个五笔的码表来看一下吧：
+
+```bash
+mkdir ~/wb-tables
+cd ~/wb-tables
+cp /usr/share/scim/tables/Wubi.bin ./
+```
+
+SCIM的码表文件是一个bin文件，还不可以直接编辑，所以要把它转换成文本文件。SCIM提供了码表制作的工具scim-make-table可以完成这个工作：
+
+```bash
+scim-make-table Wubi.bin -o Wubi.txt
+```
+
+现在可以使用文件编辑器打开Wubi.txt来看一下这码表文件到底是怎么组成的，一个码表文件大概是这样的：
+
+```bash
+SCIM_Generic_Table_Phrase_Library_TEXT
+VERSION_1_0
+### Begin Table definition.
+BEGIN_DEFINITION
+UUID = c584dfc8-c088-4908-9802-80eba0fb6ad9
+SERIAL_NUMBER = 20040227
+ICON = /usr/share/scim/icons/Wubi.png
+NAME = Wubi
+NAME.zh_CN = 五笔字型
+NAME.zh_HK = 五筆字型
+NAME.zh_TW = 五筆字型
+LANGUAGES = zh_CN,zh_SG,zh_TW,zh_HK
+### AUTHOR =
+STATUS_PROMPT = 中
+KEYBOARD_LAYOUT = US_Default
+VALID_INPUT_CHARS = abcdefghijklmnopqrstuvwxy
+### KEY_END_CHARS =
+SINGLE_WILDCARD_CHAR = z
+MULTI_WILDCARD_CHAR = *
+SPLIT_KEYS = apostrophe
+COMMIT_KEYS = space
+FORWARD_KEYS = Return
+SELECT_KEYS = 1,2,3,4,5,6,7,8,9
+PAGE_UP_KEYS = Page_Up,comma,minus
+PAGE_DOWN_KEYS = Page_Down,period,equal
+MODE_SWITCH_KEYS = Shift+KeyRelease+Shift_L,Shift+KeyRelease+Shift_R
+FULL_WIDTH_PUNCT_KEYS = Control+period
+FULL_WIDTH_LETTER_KEYS = Shift+space
+MAX_KEY_LENGTH = 4
+SHOW_KEY_PROMPT = FALSE
+AUTO_SELECT = TRUE
+AUTO_WILDCARD = TRUE
+AUTO_COMMIT = TRUE
+AUTO_SPLIT = FALSE
+AUTO_FILL = FALSE
+DISCARD_INVALID_KEY = TRUE
+DYNAMIC_ADJUST = FALSE
+ALWAYS_SHOW_LOOKUP = TRUE
+USE_FULL_WIDTH_PUNCT = TRUE
+DEF_FULL_WIDTH_PUNCT = TRUE
+USE_FULL_WIDTH_LETTER = TRUE
+DEF_FULL_WIDTH_LETTER = FALSE
+BEGIN_CHAR_PROMPTS_DEFINITION
+a 工
+b 子
+c 又
+d 大
+e 月
+f 土
+g 王
+h 目
+i 水
+j 日
+k 口
+l 田
+m 山
+n 已
+o 火
+p 之
+q 金
+r 白
+s 木
+t 禾
+u 立
+v 女
+w 人
+x 纟
+y 言
+END_CHAR_PROMPTS_DEFINITION
+END_DEFINITION
+
+### Begin Table data.
+BEGIN_TABLE
+a 工 戈
+aa 式 戒
+……
+……
+END_TABLE
+```
+
+由这个文件可以看到，SCIM的码表文件主要是由描述部分（BEGIN_DEFINITION……END_DEFINITION）和码表部分（BEGIN_TABLE……END_TABLE）两大块组成的。描述部分主要是输入法的一些基本的设置，如输入法的名字、输入法的图标等；码表部分就是各字、词对应的输入码，也是我们要修改的主要部分。
+
+自己重新做一个码表这么艰难并重复制作轮子的事情当然不会做，只要在一个现成的码表上面添加上我们需要的部分就可以了。码表文件的获得方法有很多，可以使 用工具软件把windows下面的输入法码表转换成文本文件再拿来用就可以了。我使用的是for VIMIM的极点五笔字库，可以在[这里](http://code.google.com/p/vimim-data/wiki/Download)下载。把下载的码表内容替换掉Wubi.txt文件中码表部分的内容就可以了。当然也可顺便改一下输入法的名字和图标，贴上自己的标志。接下来就是把Wubi.txt转换成SCIM的码表文件就可以了，还是使用scim-make-table：
+
+```bash
+scim-make-table Wubi.txt -b -o NWubi.bin
+```
+
+最后把生成的码表文件复制到/usr/share/scim/tables，如果有修改输入法的图标文件，把图标文件（48x48大小png图片）也复制到/usr/share/scim/icons下面，重新启动输入法，就可以在可用码表里选择启用自己生成的输入法了。
+
+```bash
+sudo cp NWubi.bin /usr/share/scim/tables
+sudo cp NWubi.png usr/share/scim/icons
+```

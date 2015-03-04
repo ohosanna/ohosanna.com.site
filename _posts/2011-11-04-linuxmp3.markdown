@@ -1,0 +1,24 @@
+---
+layout: post
+title: Linux下Mp3乱码问题的处理
+created: 2011-11-04 06:18:48.000000000 +08:00
+tags: linux tools
+---
+
+在Linux下播放mp3的时候，经常碰到mp3的信息显示为乱码的问题。这是因为我们能找到的mp3文件标签大部分都是以GBK/GB18030编码的，而绝大多数的Linux(包括Linux系的手机系统)默认的编码是utf8，两者编码不同就会导致乱码问题的出现。
+
+一个很好的解决方法就是安装Mutagen这个软件，用它来把mp3标签的编码统一转换为utf8。在Gentoo下可以通过以下命令安装：
+
+```
+emerge -av mutagen
+```
+
+装完后就可以通过以下命令来把目录下的所有mp3文件批量转换了：
+
+```bash
+cd /mnt/sda5/music   #转到音乐文件目录
+find . -iname "*.mp3" -execdir mid3iconv -e gbk --remove-v1 {} \;
+```
+
+-   -e gbk 参数是代表把 GBK 编码的标签转换为 Unicode 编码，本身是 Unicode 编码的就不转换。如果需要转换其他编码的文件可以自行修改，如改为 Big5。
+-   不过它会同时用 Unicode 编码填满 D3v1, ID3v2, APEv2 标签，但是 ID3v1 又不支持中文的 Unicode 编码，所以转换后的 ID3v1 标签全是问号。所以最好加上 –remove-v1 参数，转换后删除 ID3v1 标签。

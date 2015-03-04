@@ -1,0 +1,47 @@
+---
+layout: default
+---
+
+<div class="home">
+  <div class="post-list">
+    {% for post in paginator.posts %}
+      <div class="posts">
+        <section class="post">
+          <header class="post-header">
+            <h2 class="post-title">
+              <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
+            </h2>
+            <p class="post-meta">
+              Created at <span class="create-at">{{ post.date | date: "%b %-d, %Y" }}</span> in
+              {% for tag in post.tags %}
+              <a class="post-tag post-tag-{% cycle '1', '2', '3', '4' %}" href="/tags.html#{{ tag }}">{{ tag }}</a>
+              {% endfor %}
+            </p>
+          </header>
+
+          <div class="post-description">
+            {{post.excerpt}}
+            <p>
+              <a class="read-more" href="{{ post.url | prepend: site.baseurl }}">Read More...</a>
+            </p>
+          </div>
+        </section>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="pagination">
+    {% if paginator.previous_page %}
+      <a href="{{ paginator.previous_page_path }}" class="previous">Previous</a>
+    {% else %}
+      <span class="previous">Previous</span>
+    {% endif %}
+      <span class="page_number ">Page: {{ paginator.page }} of {{ paginator.total_pages }}</span>
+    {% if paginator.next_page %}
+      <a href="{{ paginator.next_page_path }}" class="next">Next</a>
+    {% else %}
+      <span class="next ">Next</span>
+    {% endif %}
+  </div>
+
+</div>

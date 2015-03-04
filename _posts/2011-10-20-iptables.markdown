@@ -1,0 +1,41 @@
+---
+layout: post
+title: 一些常用的iptables规则
+created: 2011-10-20 17:14:27.000000000 +08:00
+tags: linux
+---
+
+最近折腾几个ubuntu和centos的服务器，接触了一些基本的iptable的规则，记录下来以备不时需。
+
+iptables的基本语法格式是：
+
+```bash
+iptables [-t 要操作的表] <操作命令> [要操作的链] [规则号码] [匹配条件] [-j 匹配后的动作]
+```
+
+具体的参数可以参照帮助文档，下面是几个常用的例子：
+
+让远程的计算机可以ssh连接到当前计算机（打开22端口）
+
+```bash
+iptables -A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 22 -j ACCEPT
+```
+
+让远程的计算机可以使用当前计算机提供的FTP服务（打开20、21端口）
+
+```bash
+iptables -A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 20:21 -j ACCEPT
+```
+
+让远程的计算机可以使用当前计算机提供的网页服务（打开80、433端口）
+
+```bash
+iptables -A RH-Firewall-1-INPUT -m state --state NEW -p tcp --dport 80 -j ACCEPT
+iptables -A RH-Firewall-1-INPUT -m state --state NEW -p tcp --dport 443 -j ACCEPT
+```
+
+让远程的计算机可以使用当前计算机提供的数据库服务（打开3306端口）
+
+```bash
+iptables -A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 3306 -j ACCEPT
+```

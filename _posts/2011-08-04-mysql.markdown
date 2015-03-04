@@ -1,0 +1,64 @@
+---
+layout: post
+title: Mysql乱码一例
+created: 2011-08-04 08:01:37.000000000 +08:00
+tags: web mysql
+---
+
+前几天要把一个网站从服务器A转移到服务器B，原本以为这是一个很简单的事情，结果把网站程序复制过去之后，却发现有问题了：从数据库里读取出来的数据都变成乱码了！
+
+初步认为是字符集的问题，但是看了导入的数据库的语句，都有指定了DEFAULT CHARSET=utf8，也没看出有什么问题啊。多次删除——重建——导入数据库结果都还是乱码，突然想到“会不会是建立数据库时默认的编码不同呢”？　马上输入sql命令查看：
+
+```mysql
+mysql> show variables like 'char%';
++--------------------------+----------------------------+
+| Variable_name            | Value                      |
++--------------------------+----------------------------+
+| character_set_client     | latin1                     |
+| character_set_connection | latin1                     |
+| character_set_database   | latin1                     |
+| character_set_filesystem | binary                     |
+| character_set_results    | latin1                     |
+| character_set_server     | latin1                     |
+| character_set_system     | latin1                     |
+| character_sets_dir       | /usr/share/mysql/charsets/ |
++--------------------------+----------------------------+
+8 rows in set (0.00 sec)
+```
+
+果然默认的字符集是latin1，难怪使用utf8来读取的时候会出现乱码。知道原因就比较好办了，修改/etc/mysql/my.cnf在相应的位置添加以下内容：
+
+```
+[client]
+default-character-set=utf8
+
+[mysqld]
+character-set-server = utf8
+```
+
+然后重启mysql服务就可以应用新的设置了：
+
+```bash
+/etc/init.d/mysql restart
+```
+
+查看结果：
+
+```mysql
+mysql> show variables like 'char%';
++--------------------------+----------------------------+
+| Variable_name            | Value                      |
++--------------------------+----------------------------+
+| character_set_client     | utf8                       |
+| character_set_connection | utf8                       |
+| character_set_database   | utf8                       |
+| character_set_filesystem | binary                     |
+| character_set_results    | utf8                       |
+| character_set_server     | utf8                       |
+| character_set_system     | utf8                       |
+| character_sets_dir       | /usr/share/mysql/charsets/ |
++--------------------------+----------------------------+
+8 rows in set (0.08 sec)
+```
+
+为什么同样是默认的配置（服务器A的mysql默认配置文件里也没有上面添加的那两条内容），在服务器A和服务器B的结果不一样呢，难道是因为两个服务器使用的发行版不同所以默认的参数也就不一样吗？（服务器A使用的Gentoo，服务器B使用的是Ubuntu）看来不同发行版会使用不同的默认参数这个问题以后要多多注意才行。

@@ -1,0 +1,22 @@
+# encoding: utf-8
+
+encoding: "utf-8"
+paginate: 5
+paginate_path: "blog/page:num/"
+# Site settings
+title: Ohosanna's Blog
+description: > # this means to ignore newlines until "baseurl:"
+    老农家的一亩三分地
+baseurl: "" # the subpath of your site, e.g. /blog/
+#host: "http://keep-coding.com" # the base hostname & protocol for your site
+tags_path: tags.html
+
+# Build settings
+markdown: redcarpet
+
+author:
+  name: hosanna
+  email: ohosanna@gmail.com
+  twitter_username: hosanna-cn
+  github_username:  ohosanna
+  email_md5: 3b2e716beb272cf309c392eaf6ad508f

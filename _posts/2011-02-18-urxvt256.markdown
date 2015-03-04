@@ -1,0 +1,22 @@
+---
+layout: post
+title: 让urxvt支持256色
+created: 2011-02-18 22:03:53.000000000 +08:00
+tags: linux tools
+---
+
+urxvt默认是不支持256色的，所以在urxvt里使作vim的时候，那些漂亮的配色方案就没有效果了。幸好，urxvt要加入256色的支持很简单，执行：
+
+```bash
+echo "x11-terms/rxvt-unicode 256-color" >> /etc/portage/package.use
+emerge -av rxvt-unicode
+```
+
+要vim也支持256色，需要在~/.vimrc里加入：
+
+```
+set t_Co=256
+```
+
+最终效果：  
+![urxvt with 256 color by hosanna_cn, on Flickr](http://farm6.static.flickr.com/5097/5470168820_3afe3b07e2.jpg)

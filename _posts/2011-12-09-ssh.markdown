@@ -1,0 +1,19 @@
+---
+layout: post
+title: 屏蔽SSH的暴力穷举破解
+created: 2011-12-09 12:06:03.000000000 +08:00
+tags: linux
+---
+
+最近经常碰到服务器被那些蛋疼得没治的人进行SSH暴力穷举破解，实在是让人讨厌。只好想办法来阻止了。主要有两种方法：
+
+1、 使用SSH本身的配置文件来阻止，在/etc/ssh/sshd_conf文件里加入：
+
+```bash
+LoginGraceTime 2m
+MaxAuthTries 6
+```
+
+这个意思大概就是在2分钟内只可以进行6次登录的尝试。
+
+2、 还有就是使用denyhosts这个软件。它可以分析SSH的日志文件，如果登录认证连续错了指定的次数，就把该IP列入到deny hosts里面。

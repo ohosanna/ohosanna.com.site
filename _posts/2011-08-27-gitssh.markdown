@@ -1,0 +1,14 @@
+---
+layout: post
+title: Git从使用非默认SSH端口的远程仓库上克隆
+created: 2011-08-27 02:05:27.000000000 +08:00
+tags: linux
+---
+
+这篇文章只是记录以防以后忘记。
+
+假设，有台机子的SSH端口设置为3022（SSH默认的端口为22，不过为了安全，很多人都自己定义另外的端口）且有一个Git仓库，现在要把这个仓库克隆到本地，则可以用到以下命令：
+
+```bash
+git clone ssh://user@domain.com:3022/~/Projects/my_project
+```

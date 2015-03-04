@@ -1,0 +1,19 @@
+---
+layout: post
+title: 自动把网址转换超链接代码（PHP 版）
+created: 2010-08-14 17:14:57.000000000 +08:00
+tags: web php
+---
+
+有时候需要在提交内容的时候，自动把一些网址自动加上超链接。下面是一个PHP的样例，支持转换普通的链接、FTP地址、E-mail地址、Twitter类的链接，里面的正则表达式稍作修改也可以用于其它的语言。
+
+```php
+function add_links($text) {
+    $text= preg_replace("/(^|[\s ])([\w]*?)((ht|f)tp(s)?:\/\/[\w]+[^ \,\"\n\r\t<]*)/is", "$1$2<a href=\"$3\" >$3</a>", $text); /* http[s]//** */
+    $text= preg_replace("/(^|[\s ])([\w]*?)((www|ftp)\.[^ \,\"\t\n\r<]*)/is", "$1$2<a href=\"http://$3\" >$3</a>", $text); /* ftp://** */
+    $text= preg_replace("/(^|[\n ])([a-z0-9&\-_\.]+?)@([\w\-]+\.([\w\-\.]+)+)/i", "$1<a href=\"mailto:$2@$3\">$2@$3</a>", $text); /* E-mail */
+    $text= preg_replace("/@(\w+)/", '<a href="http://www.twitter.com/$1" target="_blank">@$1</a>', $text); /* @twitter 用户 */
+    $text= preg_replace("/\#(\w+)/", '<a href="http://search.twitter.com/search?q=$1" target="_blank">#$1</a>',$text); /* #twitter 搜索 */
+    return $text;
+}
+```

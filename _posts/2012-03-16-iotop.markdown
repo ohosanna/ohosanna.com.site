@@ -1,0 +1,47 @@
+---
+layout: post
+title: 监控磁盘读写状况
+created: 2012-03-16 06:13:46.000000000 +08:00
+tags: linux tools
+---
+
+有时候，我们经常会碰到这样的情形：没有运行任何程序，磁盘却不断执行读写动作，硬盘指示灯常亮，各种操作迟缓甚至鼠标都不能动了。碰到这种状况往往会感到束手无策，并且就纳闷了：**究竟是什么程序在读写我的磁盘呢？**
+
+这个时候，就到**iotop**登场的时候了！
+
+<!-- more -->
+
+```bash
+##如果没有安装就要先安装
+sudo emerge -av iotop
+sudo iotop
+```
+
+通过输出的信息，可以清楚的知道是什么程序在读/写磁盘，速度如何，程序的Pid等……
+![iotop 截图](http://pic.yupoo.com/ohosanna_v/BOKAi0HK/1r9cb.png)
+
+等等…… **我怎么知道某一个程序读取了哪些文件呢？**
+
+这个时候，就要求助于"lsof"了！
+
+```bash
+sudo emerge -av lsof
+lsof -c 软件名
+##也可以根据被频繁读取的文件来反查程序
+lsof 文件名
+##还可以根据目录进行查询
+lsof | grep 目录路径
+```
+
+如果您想知道是系统中哪个用户正在读写的哪个文件，结合 iotop 和 lsof：
+
+```bash
+sudo iotop
+##查看用户的进程
+
+lsof -p PID    ##按该用户进程 pid 查看所打开的文件
+lsof -u USERNAME    ##按用户名查看打开的文件
+
+##列出某用户的某进程打开的文件
+lsof -u USERNAME -c APPNAME
+```

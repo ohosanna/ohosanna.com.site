@@ -1,0 +1,20 @@
+---
+layout: post
+title: robots.txt 404错误的解决
+created: 2010-09-10 16:07:57.000000000 +08:00
+tags: web nginx
+---
+
+最近查看网站日志，在404错误的条目里，出现最多的就是robots.txt这个文件了。原本以为是我真没有这个文件，但一检查发出根目录下是有这个文件的，但为什么还是显示page not found呢？然后我再以为是Drupal的问题，但是在网上搜索了好久，也没听说这个跟Drupal有什么关系。最后才突然想到可能是Nginx服务配置的问题，一查配置文件，果然是我没有加上txt文件支持的原因。
+
+知道原因就好办了，在配置文件里加入下面几句就可以了：
+
+```
+location ~ (^\/|\.html|\.css|\.jpg|favicon\.ico|robots\.txt|\.png|\.js|\.gif)$ {
+        root   /var/www/hosts/nofool.info/htdocs/;
+        access_log        off;
+        expires           30d;
+}
+```
+
+上面的例子是为Nginx加入一些静态文件如html、css、jpg、png、js、gif的支持，txt文件则只支持robots.txt，ico文件则只支持favicon.ico

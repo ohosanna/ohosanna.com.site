@@ -1,0 +1,14 @@
+---
+layout: post
+title: 升级mpfr3.0和libpng1.4碰到的问题
+created: 2010-06-29 23:29:16.000000000 +08:00
+tags: linux
+---
+
+有一两个月没有升级过系统了，昨天想升级一下，居然有一百多个包要升级！想想反正这两天可以先用公司的电脑来做事，再加上办公室里也有空调，本本应该可以撑得过去，于是就开着机让它自行升级，我就一边做我的事去。结果到到了下班发现还有GCC这个超巨型的没有升级，因为赶着回家，就Ctrl-C中止后把本本带回家了。
+
+<!-- more -->
+
+结果，今天回到公司想继续的时候，却发现出事了，emerge的时候总是出错，提示“c compiler cannot create executables”，并且X也进不去了！这时突然想起前段时间论坛里有人提到升级某个软件后出现的问题类似，上网翻来一看，说是mpfr的问题。再翻看了mpfr的log，果然有提示升级后要revdep-rebuild！但是，现在GCC都有问题了，什么软件都不能编译，怎么revdep-rebuild呢？还好，另一个分区还有一个备用的Gentoo系统，赶紧把分区挂上来，将/usr/lib/libmpfr.so.1覆盖过来，重新试着emerge一个软件，果然可以成功。至于进不了X，应该是libpng的问题，这个论坛上也有提及到。也是重新revdep-rebuild就OK了，结果这样一来，又是有六十多个包要重新编译！^O^，我可怜的本本呀……
+
+revdep-rebuild的时候，基本没有碰到什么大的问题，就是FVWM老是编译不过，Google了一下，原来是<a href="http://sources.gentoo.org/cgi-bin/viewvc.cgi/gentoo-x86/x11-wm/fvwm/files/fvwm-2.5.28-libpng14.patch?view=markup" target="_blank">要打这个补丁</a>，马上把它下载下来，修改我Overlay里的ebuild，加入这个path，终于可以编译通过了，至此，这次升级算是有惊无险的通过了。
