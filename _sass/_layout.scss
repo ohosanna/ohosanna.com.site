@@ -31,6 +31,9 @@ blockquote {
   border-radius: 50%;
   overflow: hidden;
   margin-bottom: 10px;
+  img {
+    width: 150px;
+  }
 }
 .site-title,
 .bio {
@@ -43,6 +46,7 @@ blockquote {
   }
 }
 .social-media-list {
+  padding-left: 8px;
   li {
     list-style: none;
     display: inline-block;
@@ -85,10 +89,10 @@ blockquote {
     color: #222;
   }
 }
+.post-content,
 .post-description {
-  font-family: Georgia, "Cambria", serif;
   color: #444;
-  line-height: 1.8em;
+  line-height: 1.6em;
 }
 .post-meta {
   color: #999;

@@ -2,7 +2,7 @@
 <div class="sidebar pure-u-1 pure-u-md-1-4">
   <div class="header">
     <a class="avatar-img" href="/">
-      <img src="http://www.gravatar.com/avatar/{{site.author.email_md5}}?s=150" alt="avatar image" />
+      <img src="/assets/avatar.png" alt="avatar image" />
     </a>
     <h1 class="site-title">
       <a href="/">{{ site.title }}</a>
@@ -43,7 +43,12 @@
         </li>
         {% endif %}
         <li>
-          <a href="{{ "/feed.xml" | prepend: site.baseurl }}">RSS</a>
+          <a href="{{ "/feed.xml" | prepend: site.baseurl }}">
+            <span class="icon  icon-rss">
+              <svg width="14" height="14" viewBox="0 0 64 64"><path fill="#FEFEFE" d="M8.518 46.933c-4.7 0-8.518 3.833-8.518 8.505 0 4.697 3.819 8.488 8.518 8.488 4.717 0 8.531-3.791 8.531-8.488-0-4.671-3.814-8.505-8.531-8.505zM0.010 21.746v12.266c7.987 0 15.497 3.123 21.154 8.782 5.649 5.645 8.768 13.19 8.768 21.206h12.32c-0-23.301-18.955-42.254-42.241-42.254zM0.024 0v12.272c28.486 0 51.672 23.208 51.672 51.728h12.303c0-35.279-28.703-64-63.976-64z"/></svg>
+            </span>
+            <span>RSS</span>
+          </a>
         </li>
       </ul>
   </div>
